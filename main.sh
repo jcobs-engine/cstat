@@ -26,7 +26,11 @@ tput cup 2 0
 echo -en "\033[0m3D, 2 Werte pro Balken [Ja/Nein]:\033[0;1m "
 read tv
 
-tput cup 5 0
+tput cup 4 0
+echo -en "\033[0mSkalierungs-Faktor:\033[0;1m "
+read faktor
+
+tput cup 7 0
 echo -en "\033[0mAnzahl der Balken:\033[0;1m "
 read num
 
@@ -34,7 +38,7 @@ i=0
 nob=0
 while [ $i -lt $num ]; do
 
-    tput cup $(( $i + 7 )) 0
+    tput cup $(( $i + 9 )) 0
     echo -en "\033[0mBalken [$(( $i + 1 ))]:\033[0;1m "
     read balken$i
     nowbalk='balken'$i
@@ -154,10 +158,23 @@ while [ true ]; do
 
     if [ "$command" == "1" ]; then
 	tvaddon='a'
+	load='all'
+	mustload=1
     fi
     if [ "$command" == "2" ] && [ "$tv" == "Ja" ]; then
 	tvaddon='b'
+	load='all'
+	mustload=1
     fi
+
+    if [ "$tvaddon" == "a" ];then
+	color1='42'
+	color2='47'
+    else
+	color1='47'
+	color2='42'
+    fi
+    
     
     if [ "$command" == "w" ]; then
 	i=0
@@ -310,11 +327,11 @@ while [ true ]; do
 		    tput cup $(( $LINES - 3 - $b )) $(( ( ( $COLUMNS / $nob ) * ( $i ) ) + 5 ))
 		fi
 		
-		if [ $b -lt $nowbalkwerta ]; then
+		if [ $b -lt $(( $nowbalkwerta / $faktor )) ]; then
 		    c=0
 		    while [ $nowbalklenght -gt $c ]; do
 			eval 'x'$b'y'$(( ( ( $COLUMNS / $nob ) * ( $i ) ) + 5 + $c ))=1
-			echo -en "\033[42m \033[0m"
+			echo -en "\033[${color1}m \033[0m"
 			c=$(( $c + 1 ))
 		    done
 		else
@@ -377,11 +394,11 @@ while [ true ]; do
 		    tput cup $(( $LINES - 3 - $b )) $(( ( ( $COLUMNS / $nob ) * ( $i ) ) + 5 ))
 		fi
 		
-		if [ $b -lt $nowbalkwerta ]; then
+		if [ $b -lt $(( $nowbalkwerta / $faktor )) ]; then
 		    c=0
 		    while [ $tvlenght -gt $c ]; do
 			eval 'x'$b'y'$(( ( ( $COLUMNS / $nob ) * ( $i ) ) + 5 + $c ))=1
-			echo -en "\033[42m \033[0m"
+			echo -en "\033[${color1}m \033[0m"
 			c=$(( $c + 1 ))
 		    done
 		else
@@ -393,11 +410,11 @@ while [ true ]; do
 		    done
 		fi
 
-		if [ $b -lt $nowbalkwertb ]; then
+		if [ $b -lt $(( $nowbalkwertb / $faktor )) ]; then
 		    c=$tvlenght
 		    while [ $nowbalklenght -gt $c ]; do
 			eval 'x'$b'y'$(( ( ( $COLUMNS / $nob ) * ( $i ) ) + 5 + $c ))=2
-			echo -en "\033[47m \033[0m"
+			echo -en "\033[${color2}m \033[0m"
 			c=$(( $c + 1 ))
 		    done
 		else
@@ -429,21 +446,21 @@ while [ true ]; do
 	
 	i=0
 	while [ $i -lt $(( $LINES - 2 )) ]; do
-	    if [ $(( $i - 1 )) -eq 1 ] || [ $(( $i - 1 )) -eq 5 ] || [ $(( $i - 1 )) -eq 10 ] || [ $(( $i - 1 )) -eq 15 ] || [ $(( $i - 1 )) -eq 20 ] || [ $(( $i - 1 )) -eq 25 ] || [ $(( $i - 1 )) -eq 30 ] || [ $(( $i - 1 )) -eq 35 ] || [ $(( $i - 1 )) -eq 40 ] || [ $(( $i - 1 )) -eq 45 ] || [ $(( $i - 1 )) -eq 50 ] || [ $(( $i - 1 )) -eq 55 ] || [ $(( $i - 1 )) -eq 60 ] || [ $(( $i - 1 )) -eq 65 ] || [ $(( $i - 1 )) -eq 70 ] || [ $(( $i - 1 )) -eq 75 ] || [ $(( $i - 1 )) -eq 80 ] || [ $(( $i - 1 )) -eq 85 ] || [ $(( $i - 1 )) -eq 90 ] || [ $(( $i - 1 )) -eq 95 ] || [ $(( $i - 1 )) -eq 100 ]; then 
+	    if [ $(( $i - 1 )) -eq 0 ] || [ $(( $i - 1 )) -eq 5 ] || [ $(( $i - 1 )) -eq 10 ] || [ $(( $i - 1 )) -eq 15 ] || [ $(( $i - 1 )) -eq 20 ] || [ $(( $i - 1 )) -eq 25 ] || [ $(( $i - 1 )) -eq 30 ] || [ $(( $i - 1 )) -eq 35 ] || [ $(( $i - 1 )) -eq 40 ] || [ $(( $i - 1 )) -eq 45 ] || [ $(( $i - 1 )) -eq 50 ] || [ $(( $i - 1 )) -eq 55 ] || [ $(( $i - 1 )) -eq 60 ] || [ $(( $i - 1 )) -eq 65 ] || [ $(( $i - 1 )) -eq 70 ] || [ $(( $i - 1 )) -eq 75 ] || [ $(( $i - 1 )) -eq 80 ] || [ $(( $i - 1 )) -eq 85 ] || [ $(( $i - 1 )) -eq 90 ] || [ $(( $i - 1 )) -eq 95 ] || [ $(( $i - 1 )) -eq 100 ]; then 
 		b=0
 		while [ $b -lt $COLUMNS ]; do
 		    tput cup $((( $LINES - 2 ) - $i )) $b	
 		    
 		    posval='x'$(( $i - 1 ))'y'$b
 		    if [ "${!posval}" == '1' ]; then
-			echo -e "\033[0;4;42m "
+			echo -e "\033[0;4;${color1}m "
 		    elif [ "${!posval}" == '2' ]; then
-			echo -e "\033[0;4;47m "
+			echo -e "\033[0;4;${color2}m "
 		    else
 			echo -e "\033[0;4m "
 		    fi
 		    
-		    echo -e "\033[0;34m $(( $i - 1 ))"
+		    echo -e "\033[0;3;37m $(( ( $i - 1 ) * $faktor ))"
 	    	    b=$(( $b + 1 ))
 		done
 	    fi
